@@ -1,0 +1,41 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <WrapPanel>
+      <!-- Add Controls for Previewer Here -->
+      <Border Padding="5" BorderBrush="White" BorderThickness="2">
+        <PathIcon Data="{StaticResource store_microsoft_regular}"/>
+      </Border>
+      <Border Padding="5" BorderBrush="White" BorderThickness="2">
+        <PathIcon Data="{StaticResource close_icon}"/>
+      </Border>
+      <Border Padding="5" BorderBrush="White" BorderThickness="2">
+        <PathIcon Data="{StaticResource app_icon}"/>
+      </Border>
+    </WrapPanel>
+  </Design.PreviewWith>
+
+  <!-- Add Styles Here -->
+  <Style>
+    <Style.Resources>
+      <StreamGeometry x:Key="store_microsoft_regular">M11.5 9.5V13H8V9.5H11.5Z M11.5 17.5V14H8V17.5H11.5Z M16 9.5V13H12.5V9.5H16Z M16 17.5V14H12.5V17.5H16Z M8 6V3.75C8 2.7835 8.7835 2 9.75 2H14.25C15.2165 2 16 2.7835 16 3.75V6H21.25C21.6642 6 22 6.33579 22 6.75V18.25C22 19.7688 20.7688 21 19.25 21H4.75C3.23122 21 2 19.7688 2 18.25V6.75C2 6.33579 2.33579 6 2.75 6H8ZM9.5 3.75V6H14.5V3.75C14.5 3.61193 14.3881 3.5 14.25 3.5H9.75C9.61193 3.5 9.5 3.61193 9.5 3.75ZM3.5 18.25C3.5 18.9404 4.05964 19.5 4.75 19.5H19.25C19.9404 19.5 20.5 18.9404 20.5 18.25V7.5H3.5V18.25Z</StreamGeometry>
+
+
+
+      <StreamGeometry x:Key="remove_regular">M3.7547787,12.4995322 L20.2466903,12.4995322 C20.6609039,12.4995322 20.9966903,12.1637458 20.9966903,11.7495322 C20.9966903,11.3353187 20.6609039,10.9995322 20.2466903,10.9995322 L3.7547787,10.9995322 C3.34056514,10.9995322 3.0047787,11.3353187 3.0047787,11.7495322 C3.0047787,12.1637458 3.34056514,12.4995322 3.7547787,12.4995322 Z</StreamGeometry>
+
+
+
+      <StreamGeometry x:Key="close_icon">
+        M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z
+      </StreamGeometry>
+
+
+      <StreamGeometry x:Key="app_icon">
+        M4 6.03L11.5 9.25L4 8.25L4 6.03M11.5 14.75L4 17.97V15.75L11.5 14.75M2 3L2 10L17 12L2 14L2 21L23 12L2 3Z
+      </StreamGeometry>
+
+
+    </Style.Resources>
+  </Style>
+</Styles>

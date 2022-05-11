@@ -1,0 +1,107 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Telegrafer.ViewModels"
+        xmlns:v="clr-namespace:Telegrafer.Views"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
+        x:Class="Telegrafer.Views.MainWindow"
+        Icon="/Assets/app-icon.ico"
+        Title="Telegrafer"
+        
+        TransparencyLevelHint="None"
+        ExtendClientAreaToDecorationsHint="True">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
+
+  <DockPanel >
+    <ExperimentalAcrylicBorder IsHitTestVisible="False">
+      <ExperimentalAcrylicBorder.Material>
+        <ExperimentalAcrylicMaterial
+            BackgroundSource="Digger"
+            TintColor="Black"
+            TintOpacity="1"
+            MaterialOpacity="1" />
+      </ExperimentalAcrylicBorder.Material>
+
+
+
+    </ExperimentalAcrylicBorder>
+
+    <Border Background="#ff171717" BorderThickness="1" DockPanel.Dock="Top" IsHitTestVisible="False">
+      <StackPanel Margin="1" Height="30" Spacing="10" Orientation="Horizontal"  HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Image Source="avares://Telegrafer/Assets/app-icon.ico" Margin="7,0,0,0" Height="25" VerticalAlignment="Center"/>
+        <!--<PathIcon Data="{StaticResource app_icon}" Margin="10,0,0,0" Height="25" VerticalAlignment="Center"/>-->
+        <TextBlock Text="{Binding $parent[Window].Title}" VerticalAlignment="Center"/>
+      </StackPanel>
+    </Border>
+
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_File">
+        <MenuItem Header="_New Client Tab" Command="{Binding NewClientTab}" HotKey="Ctrl+N"/>
+        <Separator />
+        <MenuItem Header="_Save" Command="{Binding SaveSelectedTab}" HotKey="Ctrl+S"/>
+        <!--<MenuItem Header="Save _as" Command="{Binding SaveSelectedTabAs}" HotKey="Ctrl+Shift+S"/>-->
+      </MenuItem>
+      <!--<MenuItem Header="Help">
+        
+      </MenuItem>-->
+    </Menu>
+
+    <SplitView Name="splitPane" IsPaneOpen="True" OpenPaneLength="200" DisplayMode="Inline">
+      <SplitView.Pane>
+        <TreeView>
+          <TreeViewItem IsExpanded="True" Header="ClientConnections" Items="{Binding ClientConnections} ">
+            <TreeViewItem.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding IpAndPort}" DoubleTapped="DTapped" Background="Transparent">
+                  <TextBlock.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="_Open" Command="{Binding $parent[Window].DataContext.OpenTabForConnection}" CommandParameter="{Binding }" />
+                      <MenuItem Header="_Delete" Command="{Binding $parent[Window].DataContext.DeleteConnection}" CommandParameter="{Binding }" />
+                    </ContextMenu>
+                  </TextBlock.ContextMenu>
+                </TextBlock>
+              </DataTemplate>
+            </TreeViewItem.ItemTemplate>
+          </TreeViewItem>
+        </TreeView>
+      </SplitView.Pane>
+
+      <TabControl Items="{Binding Tabs}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" >
+        <TabControl.ItemTemplate>
+          <DataTemplate>
+            <DockPanel >
+              <DockPanel.Styles>
+                <Style Selector="DockPanel:not(:pointerover) > Button">
+                  <Setter Property="Opacity" Value="0"/>
+                </Style>
+                <Style Selector="DockPanel:pointerover > Button">
+                  <Setter Property="Opacity" Value="1"/>
+                </Style>
+              </DockPanel.Styles>
+
+              <Button Margin="10,0,0,0" DockPanel.Dock="Right" Padding="5"
+                      Command="{Binding $parent[Window].DataContext.CloseTab}"
+                      CommandParameter="{Binding }">
+                <Button.Content>
+                  <PathIcon Data="{StaticResource close_icon}" Width="8" Height="8"/>
+                </Button.Content>
+              </Button>
+
+              <TextBlock Text="{Binding Header}" ToolTip.Tip="{Binding Header}">
+              </TextBlock>
+
+            </DockPanel>
+          </DataTemplate>
+        </TabControl.ItemTemplate>
+
+
+      </TabControl>
+    </SplitView >
+
+  </DockPanel>
+
+</Window>
