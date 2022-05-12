@@ -1,4 +1,7 @@
-﻿namespace Sytem;
+﻿using System.Globalization;
+using System.Text;
+
+namespace Sytem;
 
 public static class StringExtensions
 {
@@ -84,5 +87,106 @@ public static class StringExtensions
         // This method allow to implicitly cast the type into a ReadOnlySpan<char>, so you can write the following code
         // foreach (ReadOnlySpan<char> entry in str.SplitLines())
         public static implicit operator ReadOnlySpan<char>(LineSplitEntry entry) => entry.Line;
+    }
+
+}
+
+public static class StringParser
+{
+    public static string Parse(string str)
+    {
+        var strBuilder = new StringBuilder(str.Length);
+
+        var escapedChars = new StringBuilder(str.Length);
+
+        bool isEspaped = false;
+
+        for (int i = 0; i < str.Length; i++)
+        {
+            var c = str[i];
+            if (isEspaped)
+            {
+                if (c == '<')
+                {
+                    if (escapedChars.Length > 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                    else
+                    {
+                        strBuilder.Append('<');
+                        isEspaped = false;
+                        escapedChars.Clear();
+                    }
+                }
+                else if (c == '>')
+                {
+                    strBuilder.Append(ConvertEscapeSequence(escapedChars.ToString()));
+                    isEspaped = false;
+                    escapedChars.Clear();
+                }
+                else
+                {
+                    escapedChars.Append(c);
+                }
+            }
+            else
+            {
+                if (c == '<')
+                {
+                    isEspaped = true;
+                    escapedChars.Clear();
+                }
+                else
+                {
+                    strBuilder.Append(c);
+                }
+            }
+        }
+
+        return strBuilder.ToString();
+    }
+
+    private static readonly Dictionary<string, string> EscapeSequences = new()
+    {
+        { "stx", "\u0002" },
+        { "etx", "\u0003" },
+        { "n", "\n" },
+        { "a", "\a" },
+        { "b", "\b" },
+        { "t", "\t" },
+        { "r", "\r" },
+        { "v", "\v" },
+        { "f", "\f" },
+    };
+
+    private static string ConvertEscapeSequence(string str)
+    {
+        var lowerStr = str.ToLowerInvariant();
+
+        if (lowerStr.StartsWith("u"))
+        {
+            var unicodeCharCode = lowerStr[1..];
+
+            return char.ConvertFromUtf32(int.Parse(unicodeCharCode));
+        }
+        else if (lowerStr.ToLowerInvariant().StartsWith("x"))
+        {
+            var hexStr = lowerStr[1..];
+
+            var hexValue = int.Parse(hexStr, NumberStyles.HexNumber);
+
+            var byteArray = BitConverter.GetBytes(hexValue);
+
+            return Encoding.UTF8.GetString(byteArray);
+        }
+        else if (EscapeSequences.ContainsKey(lowerStr))
+        {
+            return EscapeSequences[lowerStr];
+        }
+        else
+        {
+            throw new Exception();
+        }
     }
 }

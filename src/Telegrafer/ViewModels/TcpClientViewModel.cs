@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Sytem;
 using Telegrafer.Utils;
 using Telegrafer.Views;
 
@@ -195,10 +196,10 @@ namespace Telegrafer.ViewModels
         {
             if (this.streamWriter is not null && !string.IsNullOrWhiteSpace(this.Payload))
             {
-                var payload = this.Payload;
-
                 try
                 {
+                    var payload = StringParser.Parse(this.Payload);
+
                     if (WithLinefeed)
                     {
                         payload += Environment.NewLine;
