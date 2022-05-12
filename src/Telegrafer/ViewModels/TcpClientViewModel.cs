@@ -87,6 +87,15 @@ namespace Telegrafer.ViewModels
             }
         }
 
+        private bool WithLinefeedProperty;
+
+        [DataMember]
+        public bool WithLinefeed
+        {
+            get { return WithLinefeedProperty; }
+            set { this.RaiseAndSetIfChanged(ref WithLinefeedProperty, value); }
+        }
+
         private TcpClient? tcpClient;
         private NetworkStream? networkStream;
         private StreamReader? streamReader;
@@ -187,9 +196,14 @@ namespace Telegrafer.ViewModels
 
                 try
                 {
-                    await streamWriter.WriteLineAsync(payload);
+                    if (WithLinefeed)
+                    {
+                        payload += Environment.NewLine;
+                    }
+
+                    await streamWriter.WriteAsync(payload);
                     streamWriter.Flush();
-                    await AddLocalTextAsync(payload + Environment.NewLine);
+                    await AddLocalTextAsync(payload);
 
                     return true;
                 }

@@ -10,9 +10,17 @@
     <DockPanel DockPanel.Dock="Bottom" MaxHeight="30"
                 HorizontalAlignment="Stretch">
 
-      <Button DockPanel.Dock="Right" Content="Send" Margin="0" Height="30"
-              HorizontalAlignment="Left"
-              Command="{Binding SendCommand}"/>
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+
+        <Button Content="Send" Margin="0" Height="30"
+                HorizontalAlignment="Left"
+                Command="{Binding SendCommand}"/>
+                
+        <CheckBox IsChecked="{Binding WithLinefeed, Mode=TwoWay}" Margin="10,0,0,0"/>
+
+        <TextBlock Text="With Linefeed" VerticalAlignment="Center"/>
+
+      </StackPanel>
 
       <TextBox Watermark="payload" Margin="0,0,10,0" Height="30"
                HorizontalAlignment="Stretch"
