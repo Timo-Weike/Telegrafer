@@ -28,7 +28,7 @@
                        Items="{Binding OldPayloads}"
                        MinimumPrefixLength="0"
                        FilterMode="ContainsOrdinal"
-                       />
+                       Name="box" />
 
     </DockPanel>
 
