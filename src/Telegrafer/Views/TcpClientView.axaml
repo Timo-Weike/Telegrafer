@@ -7,24 +7,29 @@
              x:Class="Telegrafer.Views.TcpClientView">
   <DockPanel>
 
-    <DockPanel DockPanel.Dock="Bottom" MaxHeight="30"
+    <DockPanel DockPanel.Dock="Bottom" MaxHeight="32"
                 HorizontalAlignment="Stretch">
 
       <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
 
-        <Button Content="Send" Margin="0" Height="30"
+        <Button Content="Send" Margin="0" Height="32"
                 HorizontalAlignment="Left"
                 Command="{Binding SendCommand}"/>
-                
+
         <CheckBox IsChecked="{Binding WithLinefeed, Mode=TwoWay}" Margin="10,0,0,0"/>
 
         <TextBlock Text="With Linefeed" VerticalAlignment="Center"/>
 
       </StackPanel>
 
-      <TextBox Watermark="payload" Margin="0,0,10,0" Height="30"
+      <AutoCompleteBox Watermark="payload" Margin="0,0,10,0" Height="32"
                HorizontalAlignment="Stretch"
-               Text="{Binding Payload}" />
+               Text="{Binding Payload}"
+                       Items="{Binding OldPayloads}"
+                       MinimumPrefixLength="0"
+                       FilterMode="ContainsOrdinal"
+                       />
+
     </DockPanel>
 
 

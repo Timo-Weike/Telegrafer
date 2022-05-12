@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Telegrafer.Utils;
 using Telegrafer.Views;
 
 namespace Telegrafer.ViewModels
@@ -95,6 +96,8 @@ namespace Telegrafer.ViewModels
             get { return WithLinefeedProperty; }
             set { this.RaiseAndSetIfChanged(ref WithLinefeedProperty, value); }
         }
+
+        public ObservableCollection<string> OldPayloads => OldInputs.OldPayloads;
 
         private TcpClient? tcpClient;
         private NetworkStream? networkStream;
@@ -204,6 +207,8 @@ namespace Telegrafer.ViewModels
                     await streamWriter.WriteAsync(payload);
                     streamWriter.Flush();
                     await AddLocalTextAsync(payload);
+
+                    OldInputs.AddNewPayload(this.Payload);
 
                     return true;
                 }

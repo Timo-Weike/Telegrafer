@@ -10,17 +10,17 @@
 
     <DockPanel DockPanel.Dock="Top">
 
-      <Button DockPanel.Dock="Right" Content="Connect" Height="30"
+      <Button DockPanel.Dock="Right" Content="Connect" Height="32"
               HorizontalAlignment="Left"
               IsVisible="{Binding !TcpClient.Connected}"
               Command="{Binding ConnectCommand}"/>
 
-      <Button DockPanel.Dock="Right" Content="Disconnect" Height="30"
+      <Button DockPanel.Dock="Right" Content="Disconnect" Height="32"
               HorizontalAlignment="Left"
               IsVisible="{Binding TcpClient.Connected}"
               Command="{Binding TcpClient.DisconnectCommand}"/>
 
-      <TextBox Margin="0,0,10,0" Height="30"
+      <TextBox Margin="0,0,10,0" Height="32"
                HorizontalAlignment="Stretch" Watermark="ip:port"
                Text="{Binding IpAndPort}"
                IsEnabled="{Binding !TcpClient.Connected}"/>

@@ -8,12 +8,7 @@ namespace Telegrafer.Views
     {
         public TcpClientView()
         {
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent();   
         }
     }
 }

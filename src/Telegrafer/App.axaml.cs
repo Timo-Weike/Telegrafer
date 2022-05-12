@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using Telegrafer.Utils;
 using Telegrafer.ViewModels;
 using Telegrafer.Views;
 
@@ -38,9 +39,15 @@ namespace Telegrafer
                 {
                     DataContext = state,
                 };
+                desktop.ShutdownRequested += Desktop_ShutdownRequested;
             }
 
             base.OnFrameworkInitializationCompleted();
+        }
+
+        private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
+        {
+            OldInputs.Save();
         }
     }
 }
