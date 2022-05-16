@@ -12,6 +12,8 @@ namespace Telegrafer.Utils
     {
         private const string OldPayloadsFileName = "old-payloads.dat";
 
+        private static readonly string OldPayloadsFilePath = Path.Combine(App.AppDataDirPath, OldPayloadsFileName);
+
         public static ObservableCollection<string> OldPayloads { get; }
 
         public static void AddNewPayload(string payload)
@@ -40,9 +42,9 @@ namespace Telegrafer.Utils
 
         static OldInputs()
         {
-            if (File.Exists(OldPayloadsFileName))
+            if (File.Exists(OldPayloadsFilePath))
             {
-                var lines = File.ReadAllLines(OldPayloadsFileName);
+                var lines = File.ReadAllLines(OldPayloadsFilePath);
 
                 OldPayloads = new ObservableCollection<string>(lines);
             }

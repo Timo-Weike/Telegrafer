@@ -11,6 +11,13 @@ namespace Telegrafer
 {
     public partial class App : Application
     {
+        public static readonly string AppDataDirPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Telegrafer");
+
+        static App()
+        {
+            Directory.CreateDirectory(AppDataDirPath);
+        }
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -25,9 +32,10 @@ namespace Telegrafer
         public override void OnFrameworkInitializationCompleted()
         {
             // Create the AutoSuspendHelper.
+            var filePath = Path.Combine(AppDataDirPath, "appstate.json");
             var suspension = new AutoSuspendHelper(ApplicationLifetime);
             RxApp.SuspensionHost.CreateNewAppState = () => new MainWindowViewModel();
-            RxApp.SuspensionHost.SetupDefaultSuspendResume(new NewtonsoftJsonSuspensionDriver("appstate.json"));
+            RxApp.SuspensionHost.SetupDefaultSuspendResume(new NewtonsoftJsonSuspensionDriver(filePath));
             suspension.OnFrameworkInitializationCompleted();
 
             // Load the saved view model state.
