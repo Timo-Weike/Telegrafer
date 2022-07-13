@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Telegrafer", "Telegrafer\Telegrafer.csproj", "{0DC5A7C2-C639-4E4A-9701-65E2DB6E400B}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Telegrafer.WindowsInstaller", "Telegrafer.WindowsInstaller\Telegrafer.WindowsInstaller.vdproj", "{CE8BD32C-4050-4185-84BA-C79B3A0FB931}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{0DC5A7C2-C639-4E4A-9701-65E2DB6E400B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DC5A7C2-C639-4E4A-9701-65E2DB6E400B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DC5A7C2-C639-4E4A-9701-65E2DB6E400B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE8BD32C-4050-4185-84BA-C79B3A0FB931}.Debug|Any CPU.ActiveCfg = Debug
+		{CE8BD32C-4050-4185-84BA-C79B3A0FB931}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
