@@ -56,7 +56,7 @@ namespace Telegrafer.Utils
 
         public static void Save()
         {
-            File.WriteAllLines(OldPayloadsFileName, OldPayloads);
+            File.WriteAllLines(OldPayloadsFilePath, OldPayloads);
         }
     }
 }

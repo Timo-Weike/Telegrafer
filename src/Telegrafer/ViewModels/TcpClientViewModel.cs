@@ -36,6 +36,11 @@ namespace Telegrafer.ViewModels
                 {
                     await this.Disconnect(true);
                 }, this.WhenAnyValue(x => x.Connected));
+            this.ClearCommand = ReactiveCommand.Create(
+                () =>
+                {
+                    this.TextRuns.Clear();
+                });
 
             this.WhenAnyValue(x => x.Connected, x => x.Payload)
                 .Subscribe(t =>
@@ -76,6 +81,7 @@ namespace Telegrafer.ViewModels
 
         public ICommand SendCommand { get; }
         public ICommand DisconnectCommand { get; }
+        public ICommand ClearCommand { get; }
 
         private string payload;
 
@@ -110,7 +116,7 @@ namespace Telegrafer.ViewModels
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                this.TextRuns.Add(MyTextRun.Info(v));
+                this.AddTextRun(MyTextRun.Info(v));
             });
         }
 
@@ -118,7 +124,7 @@ namespace Telegrafer.ViewModels
 
         public async Task HandleException(Exception ex)
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var text =
                     Environment.NewLine
@@ -129,7 +135,15 @@ namespace Telegrafer.ViewModels
                     + "---------------"
                     + Environment.NewLine;
 
-                this.TextRuns.Add(MyTextRun.Error(text));
+                this.AddTextRun(MyTextRun.Error(text));
+
+                if (ex is IOException ioEx
+                    && ioEx.InnerException is SocketException socketEx
+                    && socketEx.ErrorCode == 10054)
+                {
+                    _ = Disconnect(false);
+                    await Task.Delay(100);
+                }
             });
         }
 
@@ -222,11 +236,26 @@ namespace Telegrafer.ViewModels
             return false;
         }
 
+        private void AddTextRun(MyTextRun run)
+        {
+            this.TextRuns.Add(run);
+
+            int max = 1000;
+            int tol = 200;
+
+            if (this.TextRuns.Count > max + tol)
+            {
+                var temp = this.TextRuns.ToArray().AsSpan(tol).ToArray();
+                this.TextRuns.Clear();
+                this.TextRuns = new ObservableCollection<MyTextRun>(temp);
+            }
+        }
+
         private async Task AddRemoteTextAsync(string readStr)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                this.TextRuns.Add(MyTextRun.Remote(readStr));
+                this.AddTextRun(MyTextRun.Remote(readStr));
             });
         }
 
@@ -234,7 +263,7 @@ namespace Telegrafer.ViewModels
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                this.TextRuns.Add(MyTextRun.Local(payload));
+                this.AddTextRun(MyTextRun.Local(payload));
             });
         }
 

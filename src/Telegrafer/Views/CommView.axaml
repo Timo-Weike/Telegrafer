@@ -27,6 +27,11 @@
             AllowScrollBelowDocument="False"
             />
         </ae:TextEditor.Options>
+      <ae:TextEditor.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="_Clear" Command="{Binding ClearCommand}" />
+        </ContextMenu>
+      </ae:TextEditor.ContextMenu>
       </ae:TextEditor>
     </Border>
   </Panel>
