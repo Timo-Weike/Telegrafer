@@ -62,6 +62,9 @@ jobs:
         with:
           # Required for permission to tag the repo.
           github_token: "${{ secrets.GITHUB_TOKEN }}"
+          release_branches: release
+          pre_release_branches: main
+          append_to_pre_release_tag: prerelease
 
   # Optional: Create a release with the build artifacts
   release:
@@ -92,7 +95,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.tag.outputs.new_tag }}
-          draft: true
           artifacts: "uploads/**"
 
       # - name: Create GitHub Release
