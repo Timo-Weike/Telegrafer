@@ -45,7 +45,7 @@ jobs:
 
       # Archive the build artifacts
       - name: Create artifact for ${{ matrix.os }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Telegrafer-${{ matrix.os }}
           path: ./publish
@@ -70,20 +70,13 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Telegrafer-ubuntu-latest
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Telegrafer-windows-latest
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: Telegrafer-macos-latest
+        uses: actions/download-artifact@v4
 
       - name: test
-        run: echo ${{ needs.tag.outputs.new_tag }}
+        run: ls -la
+
+      - name: test2
+        run: pwd
 
       
       - name: 🛎️ Create release
@@ -92,7 +85,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.tag.outputs.new_tag }}
           draft: true
-          artifacts: publish/**
+          artifacts: **
 
       # - name: Create GitHub Release
       #   uses: phuonghuynh/action-ghrelease@v1.1.0
