@@ -54,13 +54,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: add-tag
+      - name: add_tag
         uses: mathieudutour/github-tag-action@v6.2
         with:
           # Required for permission to tag the repo.
           github_token: "${{ secrets.GITHUB_TOKEN }}"
     outputs:
-      new_tag: ${{ steps.add-tag.outputs.new_tag }}
+      new_tag: ${{ steps.add_tag.outputs.new_tag }}
 
   # Optional: Create a release with the build artifacts
   release:
@@ -89,7 +89,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.tag_version.outputs.tag }}
+          tag: ${{ needs.tag.outputs.new_tag }}
           draft: true
           artifacts: publish/**
 
