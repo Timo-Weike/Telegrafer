@@ -47,7 +47,7 @@ jobs:
       - name: Create artifact for ${{ matrix.os }}
         uses: actions/upload-artifact@v4
         with:
-          name: Telegrafer-${{ matrix.os }}
+          name: ${{ matrix.os }}
           path: ./publish
 
   tag:
@@ -71,6 +71,14 @@ jobs:
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: downloads
+
+      - name: zip
+        run: |
+          zip uploads/Telegrafer-linux-x64.zip ./downloads/ubuntu-latest/linux-x64/* -r
+          zip uploads/Telegrafer-osx-x64.zip ./downloads/macos-latest/osx-x64/* -r
+          zip uploads/Telegrafer-win-x64.zip ./downloads/windows-latest/win-x64/* -r
 
       - name: test
         run: du -a
@@ -81,7 +89,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.tag.outputs.new_tag }}
           draft: true
-          artifacts: "**"
+          artifacts: "uploads/**"
 
       # - name: Create GitHub Release
       #   uses: phuonghuynh/action-ghrelease@v1.1.0
