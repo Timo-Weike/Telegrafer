@@ -40,11 +40,11 @@ jobs:
       - name: Publish Avalonia App (Cross-platform)
         run: |
           if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            dotnet publish src/Telegrafer -c Release -r linux-x64 --self-contained -o ./publish/linux-x64
+            dotnet publish src/Telegrafer -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -o ./publish/linux-x64
           elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            dotnet publish src/Telegrafer -c Release -r win-x64 --self-contained -o ./publish/win-x64
+            dotnet publish src/Telegrafer -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish/win-x64
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            dotnet publish src/Telegrafer -c Release -r osx-x64 --self-contained -o ./publish/osx-x64
+            dotnet publish src/Telegrafer -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true -o ./publish/osx-x64
           fi
 
       # Archive the build artifacts
@@ -75,7 +75,7 @@ jobs:
           name: Telegrafer-macos-latest
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: phuonghuynh/action-ghrelease@v1.1.0
         with:
           files: |
             publish/linux-x64/*
