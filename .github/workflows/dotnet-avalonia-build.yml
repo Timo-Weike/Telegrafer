@@ -77,18 +77,12 @@ jobs:
         with:
           path: downloads
 
-      - name: test
-        run: du -a
-
       - name: zip
         run: |
           mkdir uploads
           zip uploads/Telegrafer-linux-x64.zip ./downloads/ubuntu-latest/linux-x64/* -r
           zip uploads/Telegrafer-osx-x64.zip ./downloads/macos-latest/osx-x64/* -r
           zip uploads/Telegrafer-win-x64.zip ./downloads/windows-latest/win-x64/* -r
-
-      - name: test
-        run: du -a
       
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
@@ -97,14 +91,3 @@ jobs:
           tag: ${{ needs.tag.outputs.new_tag }}
           artifacts: "uploads/**"
           prerelease: ${{ github.ref == 'refs/heads/release' && 'false' || 'true' }}
-
-      # - name: Create GitHub Release
-      #   uses: phuonghuynh/action-ghrelease@v1.1.0
-      #   with:
-      #     tag_name: ${{ needs.tag.outputs.new_tag }}
-      #     files: |
-      #       publish/linux-x64/*
-      #       publish/win-x64/*
-      #       publish/osx-x64/*
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
