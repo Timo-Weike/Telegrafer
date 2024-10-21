@@ -30,11 +30,11 @@ jobs:
 
       # Install dependencies (e.g., restore NuGet packages)
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore src/Telegrafer
 
       # Build the Avalonia application
       - name: Build the app
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build src/Telegrafer --configuration Release --no-restore
 
       # Publish the application for different OS platforms
       - name: Publish Avalonia App (Cross-platform)
