@@ -64,7 +64,15 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
-          name: Telegrafer-${{ matrix.os }}
+          name: Telegrafer-ubuntu-latest
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Telegrafer-windows-latest
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Telegrafer-macos-latest
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
