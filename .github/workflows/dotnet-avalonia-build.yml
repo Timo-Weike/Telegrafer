@@ -96,6 +96,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.tag.outputs.new_tag }}
           artifacts: "uploads/**"
+          prerelease: ${{ github.ref == 'refs/heads/release' && 'false' || 'true' }}
 
       # - name: Create GitHub Release
       #   uses: phuonghuynh/action-ghrelease@v1.1.0
