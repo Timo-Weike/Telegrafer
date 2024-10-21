@@ -74,8 +74,12 @@ jobs:
         with:
           path: downloads
 
+      - name: test
+        run: du -a
+
       - name: zip
         run: |
+          mkdir uploads
           zip uploads/Telegrafer-linux-x64.zip ./downloads/ubuntu-latest/linux-x64/* -r
           zip uploads/Telegrafer-osx-x64.zip ./downloads/macos-latest/osx-x64/* -r
           zip uploads/Telegrafer-win-x64.zip ./downloads/windows-latest/win-x64/* -r
