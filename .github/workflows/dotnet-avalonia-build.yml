@@ -1,0 +1,77 @@
+name: Build and Package Avalonia App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        dotnet-version: ['6.x']
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up .NET environment for building
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      # Install dependencies (e.g., restore NuGet packages)
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the Avalonia application
+      - name: Build the app
+        run: dotnet build --configuration Release --no-restore
+
+      # Publish the application for different OS platforms
+      - name: Publish Avalonia App (Cross-platform)
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            dotnet publish src/Telegrafer -c Release -r linux-x64 --self-contained -o ./publish/linux-x64
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            dotnet publish src/Telegrafer -c Release -r win-x64 --self-contained -o ./publish/win-x64
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            dotnet publish src/Telegrafer -c Release -r osx-x64 --self-contained -o ./publish/osx-x64
+          fi
+
+      # Archive the build artifacts
+      - name: Create artifact for ${{ matrix.os }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Telegrafer-${{ matrix.os }}
+          path: ./publish
+
+  # Optional: Create a release with the build artifacts
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Telegrafer-${{ matrix.os }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            publish/linux-x64/*
+            publish/win-x64/*
+            publish/osx-x64/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
