@@ -92,4 +92,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.tag.outputs.new_tag }}
           artifacts: "uploads/**"
-          prerelease: ${{ github.ref == 'refs/heads/release' && false || true }}
+          prerelease: ${{ github.ref != 'refs/heads/release' }}
