@@ -1,0 +1,278 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="20" Background="{DynamicResource AppBackgroundBrush}">
+      <StackPanel Spacing="10">
+        <TextBlock Classes="section-title" Text="VERBINDUNGEN"/>
+        <TextBlock Classes="h2" Text="Steuerung 1"/>
+        <TextBlock Classes="secondary" Text="192.168.1.10:5000"/>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Classes="accent" Content="Verbinden"/>
+          <Button Content="Trennen"/>
+          <Button Classes="subtle" Content="Bearbeiten …"/>
+          <Button Classes="danger" Content="Löschen"/>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+  </Design.PreviewWith>
+
+  <!-- Colors, fonts and sizes of the application -->
+  <Style>
+    <Style.Resources>
+      <SolidColorBrush x:Key="AppBackgroundBrush" Color="#16181C"/>
+      <SolidColorBrush x:Key="TitleBarBrush" Color="#0E1013"/>
+      <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#111317"/>
+      <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#1A1D22"/>
+      <SolidColorBrush x:Key="LogBackgroundBrush" Color="#0D0F12"/>
+      <SolidColorBrush x:Key="DividerBrush" Color="#272B32"/>
+      <SolidColorBrush x:Key="HoverBrush" Color="#21252C"/>
+      <SolidColorBrush x:Key="PressedBrush" Color="#2A2F37"/>
+      <SolidColorBrush x:Key="BadgeBrush" Color="#22262D"/>
+      <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E6EDF3"/>
+      <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9DA7B3"/>
+      <SolidColorBrush x:Key="TextMutedBrush" Color="#6E7681"/>
+      <SolidColorBrush x:Key="AccentBrush" Color="#2F6FEB"/>
+      <SolidColorBrush x:Key="AccentHoverBrush" Color="#4182F5"/>
+      <SolidColorBrush x:Key="AccentPressedBrush" Color="#2559C4"/>
+      <SolidColorBrush x:Key="DangerBrush" Color="#C4312C"/>
+      <SolidColorBrush x:Key="DangerHoverBrush" Color="#DA3E38"/>
+      <SolidColorBrush x:Key="ErrorTextBrush" Color="#FF8E86"/>
+      <SolidColorBrush x:Key="NotificationBrush" Color="#2B2414"/>
+      <SolidColorBrush x:Key="NotificationBorderBrush" Color="#5C4B1E"/>
+      <FontFamily x:Key="MonospaceFont">Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace</FontFamily>
+      <x:Double x:Key="ControlContentThemeFontSize">13</x:Double>
+    </Style.Resources>
+  </Style>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{DynamicResource AppBackgroundBrush}"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+    <Setter Property="FontSize" Value="13"/>
+  </Style>
+
+  <!-- Text -->
+  <Style Selector="TextBlock.section-title">
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+  </Style>
+  <Style Selector="TextBlock.h2">
+    <Setter Property="FontSize" Value="16"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style Selector="TextBlock.secondary">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+  </Style>
+  <Style Selector="TextBlock.small">
+    <Setter Property="FontSize" Value="11"/>
+  </Style>
+  <Style Selector="TextBlock.field-label">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+  </Style>
+  <!-- The height of one line is reserved, so that a dialog does not change its size while typing. -->
+  <Style Selector="TextBlock.error">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Foreground" Value="{DynamicResource ErrorTextBrush}"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="MinHeight" Value="16"/>
+  </Style>
+
+  <!-- Title bar -->
+  <Style Selector="Border.titlebar">
+    <Setter Property="Background" Value="{DynamicResource TitleBarBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+  </Style>
+  <Style Selector="TextBlock.titlebar-title">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+  </Style>
+  <Style Selector="Menu.titlebar > MenuItem">
+    <Setter Property="Padding" Value="10,4"/>
+    <Setter Property="FontSize" Value="13"/>
+  </Style>
+  <!-- The Fluent theme styles separators of menus and context menus only. -->
+  <Style Selector="MenuFlyoutPresenter Separator">
+    <Setter Property="Background" Value="#3D434C"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="Height" Value="1"/>
+    <Setter Property="Margin" Value="-4,4"/>
+  </Style>
+
+  <!-- Notification -->
+  <Style Selector="Border.notification">
+    <Setter Property="Background" Value="{DynamicResource NotificationBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource NotificationBorderBrush}"/>
+    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    <Setter Property="Padding" Value="14,6,6,6"/>
+  </Style>
+
+  <!-- Side bar -->
+  <Style Selector="Border.sidebar">
+    <Setter Property="Background" Value="{DynamicResource SidebarBackgroundBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="0,0,1,0"/>
+  </Style>
+  <!-- Wide enough to be grabbed; the visible line is the border of the side bar. -->
+  <Style Selector="GridSplitter.sidebar-splitter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="MinWidth" Value="4"/>
+    <Setter Property="Width" Value="4"/>
+  </Style>
+  <Style Selector="TextBox.search">
+    <Setter Property="MinHeight" Value="30"/>
+    <Setter Property="Padding" Value="8,5"/>
+  </Style>
+  <Style Selector="TreeView.connections TreeViewItem">
+    <Setter Property="MinHeight" Value="28"/>
+  </Style>
+  <Style Selector="TextBlock.group-name">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style Selector="TextBlock.count">
+    <Setter Property="FontSize" Value="11"/>
+    <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+    <Setter Property="Margin" Value="8,0,10,0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <Style Selector="Button.recent">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="0"/>
+    <Setter Property="Padding" Value="16,5,12,5"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+  </Style>
+  <Style Selector="Button.recent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}"/>
+  </Style>
+
+  <!-- Tabs -->
+  <Style Selector="TabControl.connections">
+    <Setter Property="Padding" Value="0"/>
+  </Style>
+  <Style Selector="TabControl.connections TabItem">
+    <Setter Property="FontSize" Value="13"/>
+    <Setter Property="MinHeight" Value="38"/>
+    <Setter Property="Padding" Value="14,0,6,0"/>
+  </Style>
+  <Style Selector="Button.tab-close">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="5"/>
+    <Setter Property="Margin" Value="8,0,0,0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+
+  <!-- Connection header, history and send area -->
+  <Style Selector="Border.connection-header">
+    <Setter Property="Background" Value="{DynamicResource PanelBackgroundBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="0,1,0,1"/>
+    <Setter Property="Padding" Value="14,10"/>
+  </Style>
+  <Style Selector="Border.status-badge">
+    <Setter Property="Background" Value="{DynamicResource BadgeBrush}"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="10,4"/>
+  </Style>
+  <Style Selector="TextBox.address">
+    <Setter Property="FontFamily" Value="{DynamicResource MonospaceFont}"/>
+    <Setter Property="MaxWidth" Value="420"/>
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+    <Setter Property="MinWidth" Value="260"/>
+  </Style>
+  <Style Selector="Border.log-panel">
+    <Setter Property="Background" Value="{DynamicResource LogBackgroundBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="6"/>
+    <Setter Property="Margin" Value="12,12,12,0"/>
+  </Style>
+  <Style Selector="Grid.log-toolbar">
+    <Setter Property="Margin" Value="12,6,12,8"/>
+  </Style>
+  <Style Selector="Border.send-area">
+    <Setter Property="Background" Value="{DynamicResource PanelBackgroundBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="0,1,0,0"/>
+    <Setter Property="Padding" Value="12,10,12,12"/>
+  </Style>
+  <Style Selector="AutoCompleteBox.payload">
+    <Setter Property="FontFamily" Value="{DynamicResource MonospaceFont}"/>
+  </Style>
+  <Style Selector="ComboBox.compact">
+    <Setter Property="MinHeight" Value="28"/>
+    <Setter Property="Padding" Value="10,3,0,3"/>
+  </Style>
+
+  <!-- Buttons -->
+  <Style Selector="Button.accent">
+    <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+    <Setter Property="Foreground" Value="White"/>
+  </Style>
+  <Style Selector="Button.accent:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+    <Setter Property="TextBlock.Foreground" Value="White"/>
+  </Style>
+  <Style Selector="Button.accent:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
+    <Setter Property="TextBlock.Foreground" Value="White"/>
+  </Style>
+  <Style Selector="Button.send">
+    <Setter Property="MinWidth" Value="92"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalAlignment" Value="Stretch"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+  </Style>
+  <Style Selector="Button.danger">
+    <Setter Property="Background" Value="{DynamicResource DangerBrush}"/>
+    <Setter Property="Foreground" Value="White"/>
+  </Style>
+  <Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource DangerHoverBrush}"/>
+    <Setter Property="TextBlock.Foreground" Value="White"/>
+  </Style>
+  <Style Selector="Button.subtle">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+  </Style>
+  <Style Selector="Button.subtle:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}"/>
+  </Style>
+  <Style Selector="Button.icon">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="6"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <Style Selector="Button.icon PathIcon">
+    <Setter Property="Width" Value="14"/>
+    <Setter Property="Height" Value="14"/>
+  </Style>
+  <Style Selector="Button.icon:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource HoverBrush}"/>
+  </Style>
+
+  <!-- Dialogs -->
+  <Style Selector="Border.dialog-titlebar">
+    <Setter Property="Background" Value="{DynamicResource TitleBarBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="0,0,0,1"/>
+    <Setter Property="Height" Value="40"/>
+  </Style>
+  <Style Selector="Border.dialog-footer">
+    <Setter Property="Background" Value="{DynamicResource PanelBackgroundBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource DividerBrush}"/>
+    <Setter Property="BorderThickness" Value="0,1,0,0"/>
+    <Setter Property="Padding" Value="20,12"/>
+  </Style>
+  <Style Selector="Button.dialog">
+    <Setter Property="MinWidth" Value="96"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+  </Style>
+</Styles>

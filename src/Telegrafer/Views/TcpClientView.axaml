@@ -3,52 +3,71 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:Telegrafer.Views;assembly=Telegrafer"
-             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
              x:Class="Telegrafer.Views.TcpClientView">
   <DockPanel>
 
-    <DockPanel DockPanel.Dock="Bottom" MaxHeight="32"
-                HorizontalAlignment="Stretch">
+    <!-- Send area -->
+    <Border DockPanel.Dock="Bottom" Classes="send-area">
+      <StackPanel Spacing="8">
+        <Grid ColumnDefinitions="*,Auto">
+          <AutoCompleteBox Name="box"
+                           Classes="payload"
+                           Watermark="Telegramm eingeben und mit Enter senden"
+                           Text="{Binding Payload}"
+                           Items="{Binding OldPayloads}"
+                           MinimumPrefixLength="0"
+                           FilterMode="ContainsOrdinal"
+                           ToolTip.Tip="Steuerzeichen als Escape-Sequenz: &lt;STX&gt; &lt;ETX&gt; &lt;CR&gt; &lt;LF&gt; &lt;TAB&gt; &lt;NUL&gt; … oder ein Byte als &lt;xHH&gt;, z. B. &lt;x1B&gt;. Für das Zeichen „&lt;“ bitte „&lt;&lt;“ eingeben."/>
+          <Button Grid.Column="1" Classes="accent send" Content="Senden" Margin="8,0,0,0"
+                  ToolTip.Tip="Telegramm senden (Enter)"
+                  Command="{Binding SendCommand}"/>
+        </Grid>
 
-      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+        <WrapPanel Orientation="Horizontal">
+          <CheckBox IsChecked="{Binding AddStxEtx, Mode=TwoWay}" Margin="0,0,24,0"
+                    Content="STX und ETX automatisch hinzufügen"
+                    ToolTip.Tip="Sendet 0x02 vor und 0x03 nach dem Telegramm. Beginnt oder endet die Eingabe bereits mit STX bzw. ETX, wird es nicht doppelt hinzugefügt."/>
 
-        <Button Content="Send" Margin="0" Height="32"
-                HorizontalAlignment="Left"
-                Command="{Binding SendCommand}"/>
+          <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,24,0">
+            <TextBlock Classes="field-label" Text="Zeilenende" VerticalAlignment="Center"/>
+            <ComboBox Classes="compact" Width="170"
+                      Items="{Binding LineEndings}"
+                      SelectedItem="{Binding SelectedLineEnding, Mode=TwoWay}"
+                      ToolTip.Tip="Wird hinter dem Telegramm (und hinter ETX) angehängt."/>
+          </StackPanel>
 
-        <CheckBox IsChecked="{Binding WithLinefeed, Mode=TwoWay}" Margin="10,0,0,0"/>
-
-        <TextBlock Text="With Linefeed" VerticalAlignment="Center"/>
-
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock Classes="field-label" Text="Kodierung" VerticalAlignment="Center"/>
+            <ComboBox Classes="compact" Width="170"
+                      Items="{Binding Encodings}"
+                      SelectedItem="{Binding SelectedEncoding, Mode=TwoWay}"
+                      ToolTip.Tip="Zeichenkodierung für gesendeten und empfangenen Text. Zeichen, die die Kodierung nicht darstellen kann, werden nicht gesendet."/>
+          </StackPanel>
+        </WrapPanel>
       </StackPanel>
+    </Border>
 
-      <AutoCompleteBox Watermark="payload" Margin="0,0,10,0" Height="32"
-               HorizontalAlignment="Stretch"
-               Text="{Binding Payload}"
-                       Items="{Binding OldPayloads}"
-                       MinimumPrefixLength="0"
-                       FilterMode="ContainsOrdinal"
-                       Name="box" />
+    <!-- History toolbar -->
+    <Grid DockPanel.Dock="Bottom" Classes="log-toolbar" ColumnDefinitions="Auto,Auto,*,Auto">
+      <CheckBox IsChecked="{Binding AutoScroll, Mode=TwoWay}" Content="Automatisch scrollen"
+                ToolTip.Tip="Zeigt immer den neuesten Eintrag. Ausgeschaltet bleibt die aktuelle Position erhalten."/>
+      <CheckBox Grid.Column="1" IsChecked="{Binding WordWrap, Mode=TwoWay}" Content="Umbrechen" Margin="16,0,0,0"
+                ToolTip.Tip="Lange Telegramme umbrechen. Ausgeschaltet bleibt jedes Telegramm in einer Zeile und kann waagerecht gescrollt werden."/>
+      <TextBlock Grid.Column="2" Classes="secondary" VerticalAlignment="Center" Margin="16,0,0,0"
+                 Text="{Binding Log.Count, StringFormat={}{0:N0} Einträge}"/>
+      <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6">
+        <Button Classes="subtle" Content="Exportieren …" Command="{Binding ExportCommand}"
+                ToolTip.Tip="Verlauf als CSV- oder Textdatei speichern"/>
+        <Button Classes="subtle" Content="Leeren" Command="{Binding ClearCommand}"
+                ToolTip.Tip="Verlauf dieses Tabs leeren"/>
+      </StackPanel>
+    </Grid>
 
-    </DockPanel>
-
-
-    <Panel Margin="0,10">
-      <!--<TextBox IsReadOnly="True" IsEnabled="False" FontFamily="Consolas"
-               Text="{Binding CommContent}" TextWrapping="Wrap"/>-->
-      <!--<Border BorderBrush="Gray" BorderThickness="1" Padding="2" CornerRadius="2">
-      <ae:TextEditor Name="_textEditor"
-                               Foreground="#D4D4D4"
-                               HorizontalScrollBarVisibility="Auto"
-                               VerticalScrollBarVisibility="Visible"
-                      IsReadOnly="True"
-                     Document="{Binding CommContent}"
-                     SyntaxHighlighting="Xml"
-                     />
-      </Border>-->
-      <views:CommView
-        TextRuns="{Binding TextRuns}"/>
-    </Panel>
-
+    <!-- History -->
+    <views:CommView Entries="{Binding Log}"
+                    AutoScroll="{Binding AutoScroll}"
+                    WordWrap="{Binding WordWrap}"
+                    TakeOverCommand="{Binding TakeOverCommand}"/>
   </DockPanel>
 </UserControl>

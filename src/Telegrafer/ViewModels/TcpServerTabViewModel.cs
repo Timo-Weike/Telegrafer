@@ -104,14 +104,7 @@ namespace Telegrafer.ViewModels
             set { this.RaiseAndSetIfChanged(ref canSend, value); }
         }
 
-        private ObservableCollection<MyTextRun> TextRunsProperty = new();
-
-        [DataMember]
-        public ObservableCollection<MyTextRun> TextRuns
-        {
-            get { return TextRunsProperty; }
-            set { this.RaiseAndSetIfChanged(ref TextRunsProperty, value); }
-        }
+        public TelegramLog Log { get; } = new();
 
 
 

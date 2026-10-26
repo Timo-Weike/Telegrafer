@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using Telegrafer.Models;
 using Telegrafer.Utils;
 using Telegrafer.ViewModels;
 using Telegrafer.Views;
@@ -41,6 +42,11 @@ namespace Telegrafer
             // Load the saved view model state.
             var state = RxApp.SuspensionHost.GetAppState<MainWindowViewModel>();
 
+            // The saved connections are loaded in the background while the window is shown. Initialize handles
+            // all errors itself and shows them in the window, so the task does not need to be awaited.
+            var connectionStore = new ConnectionStore(Path.Combine(AppDataDirPath, ConnectionStore.DefaultFileName));
+            _ = state.Initialize(new ConnectionLibraryViewModel(connectionStore));
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new MainWindow()
@@ -56,6 +62,7 @@ namespace Telegrafer
         private void Desktop_ShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
         {
             OldInputs.Save();
+            RxApp.SuspensionHost.GetAppState<MainWindowViewModel>().Library?.SaveNow();
         }
     }
 }

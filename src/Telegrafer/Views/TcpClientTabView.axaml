@@ -3,31 +3,63 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:Telegrafer.Views;assembly=Telegrafer"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
-             x:Class="Telegrafer.Views.TcpClientTabView" Padding="10"
-             xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit">
+             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
+             x:Class="Telegrafer.Views.TcpClientTabView">
   <DockPanel>
 
-    <DockPanel DockPanel.Dock="Top">
+    <!-- Connection header: state, name and address, actions -->
+    <Border DockPanel.Dock="Top" Classes="connection-header">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Border Classes="status-badge" VerticalAlignment="Center"
+                ToolTip.Tip="{Binding TcpClient.StateDetail}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <PathIcon Width="11" Height="11" VerticalAlignment="Center"
+                      Data="{Binding State, Converter={x:Static views:ConnectionStateConverters.Symbol}}"
+                      Foreground="{Binding State, Converter={x:Static views:ConnectionStateConverters.Foreground}}"/>
+            <TextBlock Text="{Binding StateText}" VerticalAlignment="Center"/>
+          </StackPanel>
+        </Border>
 
-      <Button DockPanel.Dock="Right" Content="Connect" Height="32"
-              HorizontalAlignment="Left"
-              IsVisible="{Binding !TcpClient.Connected}"
-              Command="{Binding ConnectCommand}"/>
+        <StackPanel Grid.Column="1" Margin="14,0" VerticalAlignment="Center" IsVisible="{Binding IsLinked}">
+          <TextBlock Classes="h2" Text="{Binding Header}" TextTrimming="CharacterEllipsis"/>
+          <TextBlock Classes="secondary" Text="{Binding Subtitle}" TextTrimming="CharacterEllipsis"/>
+        </StackPanel>
 
-      <Button DockPanel.Dock="Right" Content="Disconnect" Height="32"
-              HorizontalAlignment="Left"
-              IsVisible="{Binding TcpClient.Connected}"
-              Command="{Binding TcpClient.DisconnectCommand}"/>
+        <TextBox Grid.Column="1" Margin="14,0" VerticalAlignment="Center" Classes="address"
+                 IsVisible="{Binding !IsLinked}"
+                 IsEnabled="{Binding !IsBusy}"
+                 Watermark="Host:Port, z. B. 192.168.1.10:5000 – Enter verbindet"
+                 Text="{Binding IpAndPort}">
+          <TextBox.KeyBindings>
+            <KeyBinding Gesture="Enter" Command="{Binding ConnectCommand}"/>
+          </TextBox.KeyBindings>
+        </TextBox>
 
-      <TextBox Margin="0,0,10,0" Height="32"
-               HorizontalAlignment="Stretch" Watermark="ip:port"
-               Text="{Binding IpAndPort}"
-               IsEnabled="{Binding !TcpClient.Connected}"/>
-      
-    </DockPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <Button Classes="accent" Content="Verbinden"
+                  IsVisible="{Binding !IsBusy}"
+                  Command="{Binding ConnectCommand}"/>
+          <Button Content="Abbrechen"
+                  IsVisible="{Binding TcpClient.IsConnecting}"
+                  Command="{Binding TcpClient.CancelConnectCommand}"/>
+          <Button Content="Trennen"
+                  IsVisible="{Binding TcpClient.Connected}"
+                  Command="{Binding TcpClient.DisconnectCommand}"/>
+          <Button Classes="subtle" Content="Speichern …"
+                  IsVisible="{Binding !IsLinked}"
+                  ToolTip.Tip="Als gespeicherte Verbindung anlegen (Strg+S)"
+                  Command="{Binding $parent[Window].DataContext.SaveTabAsConnection}"
+                  CommandParameter="{Binding}"/>
+          <Button Classes="subtle" Content="Bearbeiten …"
+                  IsVisible="{Binding IsLinked}"
+                  ToolTip.Tip="Gespeicherte Verbindung bearbeiten (Strg+S)"
+                  Command="{Binding $parent[Window].DataContext.EditTabConnection}"
+                  CommandParameter="{Binding}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
 
-    <views:TcpClientView DataContext="{Binding TcpClient}" ClipToBounds="False"/>
-    
+    <views:TcpClientView DataContext="{Binding TcpClient}"/>
+
   </DockPanel>
 </UserControl>

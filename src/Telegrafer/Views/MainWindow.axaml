@@ -3,105 +3,276 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Telegrafer.ViewModels"
+        xmlns:m="using:Telegrafer.Models"
         xmlns:v="clr-namespace:Telegrafer.Views"
-        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
         x:Class="Telegrafer.Views.MainWindow"
         Icon="/Assets/app-icon.ico"
         Title="Telegrafer"
-        
+        Width="1200" Height="760"
+        MinWidth="760" MinHeight="460"
         TransparencyLevelHint="None"
-        ExtendClientAreaToDecorationsHint="True">
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="36">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <DockPanel >
-    <ExperimentalAcrylicBorder IsHitTestVisible="False">
-      <ExperimentalAcrylicBorder.Material>
-        <ExperimentalAcrylicMaterial
-            BackgroundSource="Digger"
-            TintColor="Black"
-            TintOpacity="1"
-            MaterialOpacity="1" />
-      </ExperimentalAcrylicBorder.Material>
+  <Window.KeyBindings>
+    <KeyBinding Gesture="Ctrl+W" Command="{Binding CloseSelectedTab}"/>
+    <KeyBinding Gesture="Ctrl+Tab" Command="{Binding NextTab}"/>
+    <KeyBinding Gesture="Ctrl+Shift+Tab" Command="{Binding PreviousTab}"/>
+    <KeyBinding Gesture="Ctrl+PageDown" Command="{Binding NextTab}"/>
+    <KeyBinding Gesture="Ctrl+PageUp" Command="{Binding PreviousTab}"/>
+  </Window.KeyBindings>
 
+  <DockPanel>
 
+    <!-- Title bar. Areas without controls move the window; the caption buttons are drawn on the right. -->
+    <Panel DockPanel.Dock="Top" Height="36">
+      <Border Classes="titlebar" IsHitTestVisible="False"/>
+      <Grid ColumnDefinitions="Auto,Auto,*">
+        <StackPanel Orientation="Horizontal" Spacing="8" Margin="12,0,10,0" VerticalAlignment="Center" IsHitTestVisible="False">
+          <Image Source="avares://Telegrafer/Assets/app-icon.ico" Width="18" Height="18" VerticalAlignment="Center"/>
+          <TextBlock Classes="titlebar-title" Text="{Binding $parent[Window].Title}" VerticalAlignment="Center"/>
+        </StackPanel>
 
-    </ExperimentalAcrylicBorder>
+        <Menu Grid.Column="1" Classes="titlebar" VerticalAlignment="Center">
+          <MenuItem Header="_Datei">
+            <MenuItem Header="Neuer _Tab" Command="{Binding NewClientTab}" HotKey="Ctrl+N" InputGesture="Ctrl+N"/>
+            <MenuItem Header="Neue _Verbindung …" Command="{Binding Library.NewConnectionCommand}"/>
+            <MenuItem Header="Neue _Gruppe …" Command="{Binding Library.NewGroupCommand}"/>
+            <Separator />
+            <MenuItem Header="Tab als Verbindung _speichern" Command="{Binding SaveSelectedTab}" HotKey="Ctrl+S" InputGesture="Ctrl+S"/>
+            <MenuItem Header="Tab s_chließen" Command="{Binding CloseSelectedTab}" InputGesture="Ctrl+W"/>
+            <Separator />
+            <MenuItem Header="Verbindungen _importieren …" Command="{Binding Library.ImportCommand}"/>
+            <MenuItem Header="Verbindungen _exportieren …" Command="{Binding Library.ExportCommand}"/>
+            <Separator />
+            <MenuItem Header="_Einstellungen …" Command="{Binding ShowSettings}"/>
+          </MenuItem>
+        </Menu>
+      </Grid>
+    </Panel>
 
-    <Border Background="#ff171717" BorderThickness="1" DockPanel.Dock="Top" IsHitTestVisible="False">
-      <StackPanel Margin="1" Height="30" Spacing="10" Orientation="Horizontal"  HorizontalAlignment="Left" VerticalAlignment="Top">
-        <Image Source="avares://Telegrafer/Assets/app-icon.ico" Margin="7,0,0,0" Height="25" VerticalAlignment="Center"/>
-        <!--<PathIcon Data="{StaticResource app_icon}" Margin="10,0,0,0" Height="25" VerticalAlignment="Center"/>-->
-        <TextBlock Text="{Binding $parent[Window].Title}" VerticalAlignment="Center"/>
-      </StackPanel>
+    <!-- Notification, e.g. after an import or when the saved connections could not be read -->
+    <Border DockPanel.Dock="Top" Classes="notification"
+            IsVisible="{Binding Notification, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Text="{Binding Notification}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+        <Button Grid.Column="1" Classes="icon" Command="{Binding DismissNotification}" ToolTip.Tip="Hinweis schließen">
+          <PathIcon Data="{StaticResource close_icon}"/>
+        </Button>
+      </Grid>
     </Border>
 
-    <Menu DockPanel.Dock="Top">
-      <MenuItem Header="_File">
-        <MenuItem Header="_New Client Tab" Command="{Binding NewClientTab}" HotKey="Ctrl+N"/>
-        <Separator />
-        <MenuItem Header="_Save" Command="{Binding SaveSelectedTab}" HotKey="Ctrl+S"/>
-        <!--<MenuItem Header="Save _as" Command="{Binding SaveSelectedTabAs}" HotKey="Ctrl+Shift+S"/>-->
-      </MenuItem>
-      <!--<MenuItem Header="Help">
-        
-      </MenuItem>-->
-    </Menu>
+    <Grid ColumnDefinitions="280,Auto,*">
 
-    <SplitView Name="splitPane" IsPaneOpen="True" OpenPaneLength="200" DisplayMode="Inline">
-      <SplitView.Pane>
-        <TreeView>
-          <TreeViewItem IsExpanded="True" Header="ClientConnections" Items="{Binding ClientConnections} ">
-            <TreeViewItem.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding IpAndPort}" DoubleTapped="DTapped" Background="Transparent">
-                  <TextBlock.ContextMenu>
-                    <ContextMenu>
-                      <MenuItem Header="_Open" Command="{Binding $parent[Window].DataContext.OpenTabForConnection}" CommandParameter="{Binding }" />
-                      <MenuItem Header="_Delete" Command="{Binding $parent[Window].DataContext.DeleteConnection}" CommandParameter="{Binding }" />
-                    </ContextMenu>
-                  </TextBlock.ContextMenu>
-                </TextBlock>
-              </DataTemplate>
-            </TreeViewItem.ItemTemplate>
-          </TreeViewItem>
-        </TreeView>
-      </SplitView.Pane>
+      <!-- Side bar with the saved connections -->
+      <Border Grid.Column="0" Classes="sidebar" MinWidth="200">
+        <DockPanel>
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto" Margin="16,12,8,8">
+            <TextBlock Classes="section-title" Text="VERBINDUNGEN" VerticalAlignment="Center"/>
+            <Button Grid.Column="1" Classes="icon" ToolTip.Tip="Neue Verbindung"
+                    Command="{Binding Library.NewConnectionCommand}">
+              <PathIcon Data="{StaticResource add_icon}"/>
+            </Button>
+            <Button Grid.Column="2" Classes="icon" ToolTip.Tip="Weitere Aktionen">
+              <PathIcon Data="{StaticResource more_icon}"/>
+              <Button.Flyout>
+                <MenuFlyout Placement="BottomEdgeAlignedRight">
+                  <MenuItem Header="Neue Verbindung …" Command="{Binding Library.NewConnectionCommand}"/>
+                  <MenuItem Header="Neue Gruppe …" Command="{Binding Library.NewGroupCommand}"/>
+                  <Separator/>
+                  <MenuItem Header="{Binding Library.SortByNameHeader}" Command="{Binding Library.SortCommand}" CommandParameter="{x:Static m:ConnectionSortMode.Name}"/>
+                  <MenuItem Header="{Binding Library.SortByAddressHeader}" Command="{Binding Library.SortCommand}" CommandParameter="{x:Static m:ConnectionSortMode.Address}"/>
+                  <MenuItem Header="{Binding Library.SortByLastUseHeader}" Command="{Binding Library.SortCommand}" CommandParameter="{x:Static m:ConnectionSortMode.LastUsed}"/>
+                  <Separator/>
+                  <MenuItem Header="Verbindungen importieren …" Command="{Binding Library.ImportCommand}"/>
+                  <MenuItem Header="Verbindungen exportieren …" Command="{Binding Library.ExportCommand}"/>
+                </MenuFlyout>
+              </Button.Flyout>
+            </Button>
+          </Grid>
 
-      <TabControl Items="{Binding Tabs}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" >
-        <TabControl.ItemTemplate>
-          <DataTemplate>
-            <DockPanel >
-              <DockPanel.Styles>
-                <Style Selector="DockPanel:not(:pointerover) > Button">
-                  <Setter Property="Opacity" Value="0"/>
+          <TextBox DockPanel.Dock="Top" Name="SearchBox" Classes="search" Margin="12,0,12,10"
+                   Watermark="Suchen: Name, Adresse, Gruppe"
+                   Text="{Binding Library.SearchText}">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Escape" Command="{Binding Library.ClearSearchCommand}"/>
+            </TextBox.KeyBindings>
+            <TextBox.InnerLeftContent>
+              <PathIcon Data="{StaticResource search_icon}" Width="13" Height="13" Margin="8,0,0,0"
+                        Foreground="{DynamicResource TextMutedBrush}"/>
+            </TextBox.InnerLeftContent>
+          </TextBox>
+
+          <!-- Recently used connections -->
+          <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8" IsVisible="{Binding Library.ShowRecent}">
+            <TextBlock Classes="section-title" Text="ZULETZT VERWENDET" Margin="16,2,16,4"/>
+            <ItemsControl Items="{Binding Library.RecentConnections}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Button Classes="recent" ToolTip.Tip="{Binding ToolTip}"
+                          Command="{Binding $parent[Window].DataContext.Library.OpenCommand}"
+                          CommandParameter="{Binding}">
+                    <Grid ColumnDefinitions="16,*,Auto">
+                      <PathIcon Width="9" Height="9" HorizontalAlignment="Left"
+                                Data="{Binding State, Converter={x:Static v:ConnectionStateConverters.Symbol}}"
+                                Foreground="{Binding State, Converter={x:Static v:ConnectionStateConverters.Foreground}}"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Profile.DisplayName}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                      <TextBlock Grid.Column="2" Classes="secondary small" Text="{Binding AddressHint}" Margin="8,0,0,0" VerticalAlignment="Center"
+                                 IsVisible="{Binding AddressHint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                    </Grid>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+
+          <Panel>
+            <TreeView Classes="connections"
+                      Items="{Binding Library.Nodes}"
+                      SelectedItem="{Binding Library.SelectedItem, Mode=TwoWay}">
+              <TreeView.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding Library.OpenSelectedCommand}"/>
+              </TreeView.KeyBindings>
+              <TreeView.Styles>
+                <Style Selector="TreeViewItem">
+                  <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
                 </Style>
-                <Style Selector="DockPanel:pointerover > Button">
-                  <Setter Property="Opacity" Value="1"/>
+                <Style Selector="MenuItem.move-targets MenuItem">
+                  <Setter Property="Header" Value="{Binding Header}"/>
+                  <Setter Property="Command" Value="{Binding Command}"/>
+                  <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
                 </Style>
-              </DockPanel.Styles>
+              </TreeView.Styles>
+              <TreeView.DataTemplates>
+                <TreeDataTemplate DataType="vm:ConnectionGroupNode" ItemsSource="{Binding Connections}">
+                  <Grid ColumnDefinitions="*,Auto" Background="Transparent">
+                    <Grid.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="Neue Verbindung in dieser Gruppe …"
+                                  Command="{Binding $parent[Window].DataContext.Library.NewConnectionCommand}"
+                                  CommandParameter="{Binding}"/>
+                        <Separator/>
+                        <MenuItem Header="Gruppe umbenennen …" IsEnabled="{Binding !IsUngrouped}"
+                                  Command="{Binding $parent[Window].DataContext.Library.RenameGroupCommand}"
+                                  CommandParameter="{Binding}"/>
+                        <MenuItem Header="Gruppe löschen …" IsEnabled="{Binding !IsUngrouped}"
+                                  Command="{Binding $parent[Window].DataContext.Library.DeleteGroupCommand}"
+                                  CommandParameter="{Binding}"/>
+                      </ContextMenu>
+                    </Grid.ContextMenu>
+                    <TextBlock Classes="group-name" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Classes="count" Text="{Binding Count}"/>
+                  </Grid>
+                </TreeDataTemplate>
 
-              <Button Margin="10,0,0,0" DockPanel.Dock="Right" Padding="5"
-                      Command="{Binding $parent[Window].DataContext.CloseTab}"
-                      CommandParameter="{Binding }">
-                <Button.Content>
-                  <PathIcon Data="{StaticResource close_icon}" Width="8" Height="8"/>
-                </Button.Content>
-              </Button>
+                <DataTemplate DataType="vm:ConnectionNode">
+                  <Grid ColumnDefinitions="16,*" Background="Transparent" Margin="0,2"
+                        DoubleTapped="DTapped" ToolTip.Tip="{Binding ToolTip}">
+                    <Grid.ContextMenu>
+                      <ContextMenu>
+                        <MenuItem Header="Verbinden" FontWeight="SemiBold"
+                                  Command="{Binding $parent[Window].DataContext.Library.OpenCommand}"
+                                  CommandParameter="{Binding}"/>
+                        <MenuItem Header="In neuem Tab verbinden"
+                                  Command="{Binding $parent[Window].DataContext.Library.OpenInNewTabCommand}"
+                                  CommandParameter="{Binding}"/>
+                        <Separator/>
+                        <MenuItem Header="Bearbeiten …"
+                                  Command="{Binding $parent[Window].DataContext.Library.EditConnectionCommand}"
+                                  CommandParameter="{Binding}"/>
+                        <MenuItem Header="Duplizieren …"
+                                  Command="{Binding $parent[Window].DataContext.Library.DuplicateConnectionCommand}"
+                                  CommandParameter="{Binding}"/>
+                        <MenuItem Header="Verschieben nach" Classes="move-targets" Items="{Binding MoveTargets}"/>
+                        <Separator/>
+                        <MenuItem Header="Löschen …"
+                                  Command="{Binding $parent[Window].DataContext.Library.DeleteConnectionCommand}"
+                                  CommandParameter="{Binding}"/>
+                      </ContextMenu>
+                    </Grid.ContextMenu>
+                    <PathIcon Width="9" Height="9" HorizontalAlignment="Left" VerticalAlignment="Center"
+                              Data="{Binding State, Converter={x:Static v:ConnectionStateConverters.Symbol}}"
+                              Foreground="{Binding State, Converter={x:Static v:ConnectionStateConverters.Foreground}}"/>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                      <TextBlock Text="{Binding Profile.DisplayName}" TextTrimming="CharacterEllipsis"/>
+                      <TextBlock Classes="secondary small" Text="{Binding AddressHint}" TextTrimming="CharacterEllipsis"
+                                 IsVisible="{Binding AddressHint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                    </StackPanel>
+                  </Grid>
+                </DataTemplate>
+              </TreeView.DataTemplates>
+            </TreeView>
 
-              <TextBlock Text="{Binding Header}" ToolTip.Tip="{Binding Header}">
-              </TextBlock>
+            <!-- No saved connections yet -->
+            <StackPanel Margin="16,4,16,0" Spacing="10" VerticalAlignment="Top" IsVisible="{Binding Library.IsEmpty}">
+              <TextBlock Classes="secondary" TextWrapping="Wrap"
+                         Text="Noch keine gespeicherten Verbindungen. Lege Verbindungen an und fasse sie in Gruppen zusammen, z. B. nach Anlage oder Testsystem."/>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Classes="accent" Content="Neue Verbindung …" Command="{Binding Library.NewConnectionCommand}"/>
+                <Button Classes="subtle" Content="Neue Gruppe …" Command="{Binding Library.NewGroupCommand}"/>
+              </StackPanel>
+            </StackPanel>
 
-            </DockPanel>
-          </DataTemplate>
-        </TabControl.ItemTemplate>
+            <TextBlock Classes="secondary" Margin="16,4,16,0" TextWrapping="Wrap" VerticalAlignment="Top"
+                       IsVisible="{Binding Library.HasNoSearchResults}"
+                       Text="Keine passende Verbindung gefunden."/>
+          </Panel>
+        </DockPanel>
+      </Border>
 
+      <GridSplitter Grid.Column="1" Classes="sidebar-splitter" ResizeDirection="Columns"/>
 
-      </TabControl>
-    </SplitView >
+      <!-- Open connections -->
+      <Panel Grid.Column="2">
+        <TabControl Classes="connections" Items="{Binding Tabs}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+          <TabControl.ItemTemplate>
+            <DataTemplate>
+              <DockPanel ToolTip.Tip="{Binding HeaderToolTip}">
+                <DockPanel.Styles>
+                  <Style Selector="DockPanel:not(:pointerover) > Button">
+                    <Setter Property="Opacity" Value="0"/>
+                  </Style>
+                  <Style Selector="DockPanel:pointerover > Button">
+                    <Setter Property="Opacity" Value="1"/>
+                  </Style>
+                </DockPanel.Styles>
 
+                <Button Classes="tab-close" DockPanel.Dock="Right" ToolTip.Tip="Tab schließen (Strg+W)"
+                        Command="{Binding $parent[Window].DataContext.CloseTab}"
+                        CommandParameter="{Binding }">
+                  <Button.Content>
+                    <PathIcon Data="{StaticResource close_icon}" Width="8" Height="8"/>
+                  </Button.Content>
+                </Button>
+
+                <PathIcon DockPanel.Dock="Left" Width="10" Height="10" Margin="0,0,8,0" VerticalAlignment="Center"
+                          Data="{Binding State, Converter={x:Static v:ConnectionStateConverters.Symbol}}"
+                          Foreground="{Binding State, Converter={x:Static v:ConnectionStateConverters.Foreground}}"/>
+
+                <TextBlock Text="{Binding Header}" MaxWidth="220" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+              </DockPanel>
+            </DataTemplate>
+          </TabControl.ItemTemplate>
+        </TabControl>
+
+        <!-- No open connection -->
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" MaxWidth="480"
+                    IsVisible="{Binding !HasTabs}">
+          <PathIcon Data="{StaticResource app_icon}" Width="44" Height="44" Foreground="{DynamicResource TextMutedBrush}"/>
+          <TextBlock Classes="h2" Text="Keine Verbindung geöffnet" HorizontalAlignment="Center"/>
+          <TextBlock Classes="secondary" TextWrapping="Wrap" TextAlignment="Center"
+                     Text="Öffne eine gespeicherte Verbindung per Doppelklick in der Seitenleiste oder verbinde dich in einem neuen Tab direkt mit einer Adresse."/>
+          <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+            <Button Classes="accent" Content="Neuer Tab (Strg+N)" Command="{Binding NewClientTab}"/>
+            <Button Classes="subtle" Content="Neue Verbindung …" Command="{Binding Library.NewConnectionCommand}"/>
+          </StackPanel>
+        </StackPanel>
+      </Panel>
+    </Grid>
   </DockPanel>
-
 </Window>

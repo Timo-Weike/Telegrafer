@@ -54,7 +54,7 @@
       </StackPanel>
 
       <views:CommView DataContext="{Binding SelectedClient}"
-        TextRuns="{Binding TextRuns}"/>
+        Entries="{Binding Log}"/>
     </DockPanel>
 
   </DockPanel>

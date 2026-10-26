@@ -6,33 +6,42 @@
              x:Class="Telegrafer.Views.CommView"
              xmlns:ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit">
 
-
-  <Panel Margin="0,10" >
-    <!--<TextBox IsReadOnly="True" IsEnabled="False" FontFamily="Consolas"
-               Text="{Binding CommContent}" TextWrapping="Wrap"/>-->
-    <Border BorderBrush="Gray" BorderThickness="1" Padding="2" CornerRadius="2">
-      <ae:TextEditor
-        Name="_textEditor"
-        Foreground="#D4D4D4"
-        HorizontalScrollBarVisibility="Auto"
-        VerticalScrollBarVisibility="Visible"
-        IsReadOnly="True"
-        FontFamily="Consolas"
-        WordWrap="True"
-        >
-        <ae:TextEditor.Options>
-          <ae:TextEditorOptions 
-            ShowSpaces="True"
-            ShowTabs="True"
-            AllowScrollBelowDocument="False"
-            />
-        </ae:TextEditor.Options>
+  <Border Classes="log-panel">
+    <ae:TextEditor
+      Name="_textEditor"
+      Background="Transparent"
+      Foreground="{DynamicResource TextPrimaryBrush}"
+      HorizontalScrollBarVisibility="Disabled"
+      VerticalScrollBarVisibility="Auto"
+      IsReadOnly="True"
+      FontFamily="{DynamicResource MonospaceFont}"
+      FontSize="13"
+      WordWrap="True"
+      Padding="10,6">
+      <ae:TextEditor.Options>
+        <ae:TextEditorOptions
+          ShowSpaces="False"
+          ShowTabs="False"
+          ShowBoxForControlCharacters="False"
+          EnableHyperlinks="False"
+          EnableEmailHyperlinks="False"
+          EnableTextDragDrop="False"
+          AllowScrollBelowDocument="False"/>
+      </ae:TextEditor.Options>
       <ae:TextEditor.ContextMenu>
-        <ContextMenu>
-          <MenuItem Header="_Clear" Command="{Binding ClearCommand}" />
+        <ContextMenu Name="_contextMenu">
+          <MenuItem Name="_copyTelegramItem" Header="Telegramm kopieren" Click="OnCopyTelegram"/>
+          <MenuItem Name="_copyLineItem" Header="Eintrag mit Zeit und Verbindung kopieren" Click="OnCopyLine"/>
+          <MenuItem Name="_takeOverItem" Header="In Eingabefeld übernehmen" Click="OnTakeOver"/>
+          <MenuItem Header="Markierung kopieren" InputGesture="Ctrl+C" Click="OnCopySelection"/>
+          <Separator/>
+          <MenuItem Header="Im Verlauf suchen …" InputGesture="Ctrl+F" Click="OnSearch"/>
+          <MenuItem Header="Alles markieren" InputGesture="Ctrl+A" Click="OnSelectAll"/>
+          <Separator/>
+          <MenuItem Header="Verlauf exportieren …" Command="{Binding ExportCommand}"/>
+          <MenuItem Header="Verlauf leeren" Command="{Binding ClearCommand}"/>
         </ContextMenu>
       </ae:TextEditor.ContextMenu>
-      </ae:TextEditor>
-    </Border>
-  </Panel>
+    </ae:TextEditor>
+  </Border>
 </UserControl>

@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="440"
+        x:Class="Telegrafer.Views.PromptWindow"
+        Icon="/Assets/app-icon.ico"
+        Title="{Binding Title}"
+        Width="440" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="40">
+  <DockPanel>
+    <Panel DockPanel.Dock="Top">
+      <Border Classes="dialog-titlebar" IsHitTestVisible="False">
+        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Margin="20,0" VerticalAlignment="Center"/>
+      </Border>
+      <Button Classes="icon" HorizontalAlignment="Right" Margin="0,0,8,0" ToolTip.Tip="Schließen"
+              Command="{Binding CancelCommand}">
+        <PathIcon Data="{StaticResource close_icon}"/>
+      </Button>
+    </Panel>
+
+    <Border DockPanel.Dock="Bottom" Classes="dialog-footer">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+        <Button Classes="dialog" Content="Abbrechen" IsCancel="True" Command="{Binding CancelCommand}"/>
+        <Button Classes="dialog" Classes.accent="{Binding !IsDestructive}" Classes.danger="{Binding IsDestructive}"
+                Content="{Binding ConfirmText}" IsDefault="True" Command="{Binding ConfirmCommand}"/>
+      </StackPanel>
+    </Border>
+
+    <StackPanel Margin="20,16,20,20" Spacing="10">
+      <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
+      <TextBox Name="InputBox" Text="{Binding Text}" IsVisible="{Binding ShowInput}"/>
+    </StackPanel>
+  </DockPanel>
+</Window>

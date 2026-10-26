@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="480"
+        x:Class="Telegrafer.Views.SettingsWindow"
+        Icon="/Assets/app-icon.ico"
+        Title="Einstellungen"
+        Width="480" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="40">
+  <DockPanel>
+    <Panel DockPanel.Dock="Top">
+      <Border Classes="dialog-titlebar" IsHitTestVisible="False">
+        <TextBlock Text="Einstellungen" FontWeight="SemiBold" Margin="20,0" VerticalAlignment="Center"/>
+      </Border>
+      <Button Classes="icon" HorizontalAlignment="Right" Margin="0,0,8,0" ToolTip.Tip="Schließen"
+              Command="{Binding CancelCommand}">
+        <PathIcon Data="{StaticResource close_icon}"/>
+      </Button>
+    </Panel>
+
+    <Border DockPanel.Dock="Bottom" Classes="dialog-footer">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+        <Button Classes="dialog" Content="Abbrechen" IsCancel="True" Command="{Binding CancelCommand}"/>
+        <Button Classes="dialog accent" Content="Speichern" IsDefault="True" Command="{Binding SaveCommand}"/>
+      </StackPanel>
+    </Border>
+
+    <StackPanel Margin="20,16,20,20" Spacing="12">
+      <TextBlock Classes="section-title" Text="STANDARD FÜR NEUE VERBINDUNGEN UND TABS"/>
+      <CheckBox IsChecked="{Binding DefaultAddStxEtx, Mode=TwoWay}" Content="STX und ETX automatisch hinzufügen"/>
+      <Grid ColumnDefinitions="*,12,*">
+        <StackPanel Spacing="5">
+          <TextBlock Classes="field-label" Text="Zeilenende"/>
+          <ComboBox HorizontalAlignment="Stretch" Items="{Binding LineEndings}" SelectedItem="{Binding DefaultLineEnding, Mode=TwoWay}"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Spacing="5">
+          <TextBlock Classes="field-label" Text="Zeichenkodierung"/>
+          <ComboBox HorizontalAlignment="Stretch" Items="{Binding Encodings}" SelectedItem="{Binding DefaultEncoding, Mode=TwoWay}"/>
+        </StackPanel>
+      </Grid>
+      <TextBlock Classes="secondary" TextWrapping="Wrap"
+                 Text="Gespeicherte Verbindungen behalten ihre eigenen Einstellungen."/>
+
+      <TextBlock Classes="section-title" Text="VERLAUF" Margin="0,8,0,0"/>
+      <StackPanel Spacing="5">
+        <TextBlock Classes="field-label" Text="Höchstzahl der Einträge pro Tab"/>
+        <NumericUpDown HorizontalAlignment="Left" Width="180"
+                       Value="{Binding MaxLogEntries, Mode=TwoWay}"
+                       Minimum="{Binding MinLogEntries}" Maximum="{Binding MaxLogEntriesLimit}"
+                       Increment="1000" FormatString="N0"/>
+        <TextBlock Classes="secondary" TextWrapping="Wrap"
+                   Text="Ältere Einträge werden entfernt, damit die Anzeige auch bei sehr vielen Telegrammen flüssig bleibt."/>
+      </StackPanel>
+      <CheckBox IsChecked="{Binding AutoScroll, Mode=TwoWay}" Content="Neue Tabs scrollen automatisch zum neuesten Eintrag"/>
+
+      <TextBlock Classes="section-title" Text="START" Margin="0,8,0,0"/>
+      <CheckBox IsChecked="{Binding RestoreTabs, Mode=TwoWay}" Content="Zuletzt geöffnete Tabs beim Start wiederherstellen"/>
+    </StackPanel>
+  </DockPanel>
+</Window>

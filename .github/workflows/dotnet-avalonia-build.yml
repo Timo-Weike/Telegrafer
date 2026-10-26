@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        dotnet-version: ['6.x']
+        dotnet-version: ['10.x']
 
     steps:
       # Checkout the code from the repository
@@ -33,15 +33,23 @@ jobs:
       - name: Build the app
         run: dotnet build src/Telegrafer --configuration Release --no-restore
 
-      # Publish the application for different OS platforms
+      # Run the unit tests (telegram codec, framing, TCP connection, connection store)
+      - name: Test
+        run: dotnet test src/Telegrafer.Tests --configuration Release
+
+      # Publish the application for different OS platforms.
+      # ReadyToRun as a regular folder instead of a single file: the single file bundle is one large
+      # unsigned executable that virus scanners have to inspect completely on start, while the folder
+      # keeps the signed runtime assemblies as separate files. Measured on Windows with Defender:
+      # first start 10-15 s -> 3-4 s, warm start 2.3 s -> 0.8 s.
       - name: Publish Avalonia App (Cross-platform)
         run: |
           if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            dotnet publish src/Telegrafer -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -o ./publish/linux-x64
+            dotnet publish src/Telegrafer -c Release -r linux-x64 --self-contained -p:PublishReadyToRun=true -o ./publish/linux-x64
           elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            dotnet publish src/Telegrafer -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o ./publish/win-x64
+            dotnet publish src/Telegrafer -c Release -r win-x64 --self-contained -p:PublishReadyToRun=true -o ./publish/win-x64
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            dotnet publish src/Telegrafer -c Release -r osx-x64 --self-contained -p:PublishSingleFile=true -o ./publish/osx-x64
+            dotnet publish src/Telegrafer -c Release -r osx-x64 --self-contained -p:PublishReadyToRun=true -o ./publish/osx-x64
           fi
 
       # Archive the build artifacts
